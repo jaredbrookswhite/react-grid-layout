@@ -53,6 +53,7 @@ export type Props = {
   className: string,
   style: Object,
   width: number,
+  allowDragOut: boolean,
   autoSize: boolean,
   cols: number,
   draggableCancel: string,
@@ -126,6 +127,8 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     // If you need that behavior, use WidthProvider.
     width: PropTypes.number,
 
+    // If true allow a widget to be drug out of the grid
+    allowDragOut: PropTypes.bool,
     // If true, the container height swells and contracts to fit contents
     autoSize: PropTypes.bool,
     // # of cols.
@@ -361,11 +364,21 @@ export default class ReactGridLayout extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
+    const { allowDragOut, layout: propsLayout } = this.props;
+    const oldLayout = prevState.layout;
     if (!this.state.activeDrag) {
-      const newLayout = this.state.layout;
-      const oldLayout = prevState.layout;
-
-      this.onLayoutMaybeChanged(newLayout, oldLayout);
+      this.onLayoutMaybeChanged(propsLayout, oldLayout);
+    }
+    if (
+      allowDragOut &&
+      propsLayout !== oldLayout.length &&
+      prevState.activeDrag
+    ) {
+      this.setState({
+        activeDrag: null,
+        oldDragItem: null,
+        oldLayout: null
+      });
     }
   }
 
