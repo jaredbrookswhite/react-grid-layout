@@ -371,7 +371,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     }
     if (
       allowDragOut &&
-      propsLayout !== oldLayout.length &&
+      propsLayout.length !== oldLayout.length &&
       prevState.activeDrag
     ) {
       this.setState({
